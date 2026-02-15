@@ -4,67 +4,168 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>简单计数器</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            padding: 20px;
         }
+
         .container {
             text-align: center;
             background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            animation: slideIn 0.5s ease-out;
         }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .cat-emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
         h1 {
             color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #999;
+            font-size: 14px;
             margin-bottom: 30px;
         }
+
         .counter {
-            font-size: 48px;
-            color: #667eea;
-            margin: 20px 0;
+            font-size: 72px;
+            color: #764ba2;
+            margin: 30px 0;
             font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
         button {
-            padding: 12px 24px;
-            margin: 10px;
+            padding: 14px 28px;
             font-size: 16px;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
-            background-color: #667eea;
             color: white;
-            transition: background-color 0.3s;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
-        button:hover {
-            background-color: #764ba2;
+
+        button:active {
+            transform: scale(0.95);
         }
-        button.reset {
-            background-color: #ff6b6b;
+
+        .btn-increment {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        button.reset:hover {
-            background-color: #ee5a52;
+
+        .btn-increment:hover {
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-decrement {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-decrement:hover {
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .btn-reset:hover {
+            box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .cat-message {
+            margin-top: 30px;
+            font-size: 24px;
+            height: 30px;
+            min-height: 30px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎉 简单计数器</h1>
+        <div class="cat-emoji">🐱</div>
+        <h1>喵喵计数器</h1>
+        <p class="subtitle">来和可爱的小猫一起数数吧！</p>
+        
         <div class="counter" id="count">0</div>
-        <div>
-            <button onclick="increment()">➕ 增加</button>
-            <button onclick="decrement()">➖ 减少</button>
-            <button class="reset" onclick="reset()">🔄 重置</button>
+        
+        <div class="button-group">
+            <button class="btn-increment" onclick="increment()">➕ 增加</button>
+            <button class="btn-decrement" onclick="decrement()">➖ 减少</button>
+            <button class="btn-reset" onclick="reset()">🔄 重置</button>
         </div>
+
+        <div class="cat-message" id="message"></div>
     </div>
 
     <script>
         let count = 0;
+        const messages = [
+            '😸 喵～',
+            '😻 太开心了！',
+            '😽 呼呼呼～',
+            '😼 我在数数呢',
+            '😾 这样可以吗？',
+            '😿 再来一次吧',
+            '🙀 哇！',
+            '😹 哈哈哈～'
+        ];
 
         function increment() {
             count++;
@@ -72,7 +173,9 @@
         }
 
         function decrement() {
-            count--;
+            if (count > 0) {
+                count--;
+            }
             updateDisplay();
         }
 
@@ -83,6 +186,8 @@
 
         function updateDisplay() {
             document.getElementById('count').textContent = count;
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            document.getElementById('message').textContent = randomMessage;
         }
     </script>
 </body>
